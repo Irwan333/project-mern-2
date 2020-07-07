@@ -1,5 +1,6 @@
 const mongoose = require("mongoose");
 const bcrypt = require("bcryptjs");
+const { ObjectId } = mongoose.Schema;
 
 const userSchema = new mongoose.Schema({
   name: {
@@ -22,24 +23,24 @@ const userSchema = new mongoose.Schema({
     default: Date.now,
   },
   updated: Date,
-  // photo: {
-  //     data: Buffer,
-  //     contentType: String
-  // },
-  // about: {
-  //     type: String,
-  //     trim: true
-  // },
-  // following: [{ type: ObjectId, ref: "User" }],
-  // followers: [{ type: ObjectId, ref: "User" }],
-  // resetPasswordLink: {
-  //     data: String,
-  //     default: ""
-  // },
-  // role: {
-  //     type: String,
-  //     default: "subscriber"
-  // }
+  photo: {
+    data: Buffer,
+    contentType: String,
+  },
+  about: {
+    type: String,
+    trim: true,
+  },
+  following: [{ type: ObjectId, ref: "User" }],
+  followers: [{ type: ObjectId, ref: "User" }],
+  resetPasswordLink: {
+    data: String,
+    default: "",
+  },
+  role: {
+    type: Number,
+    default: 0,
+  },
 });
 
 // virtual
