@@ -22,16 +22,16 @@ exports.postById = (req, res, next, id) => {
 
 /*
 exports.getPosts = (req, res) => {
-    const posts = Post.find()
-        .populate("postedBy", "_id name")
-        .populate("comments", "text created")
-        .populate("comments.postedBy", "_id name")
-        .select("_id title body created likes")
-        .sort({ created: -1 })
-        .then(posts => {
-            res.json(posts);
-        })
-        .catch(err => console.log(err));
+  const posts = Post.find()
+      .populate("postedBy", "_id name")
+      .populate("comments", "text created")
+      .populate("comments.postedBy", "_id name")
+      .select("_id title body created likes")
+      .sort({ created: -1 })
+      .then(posts => {
+          res.json(posts);
+      })
+      .catch(err => console.log(err));
 };
 */
 
@@ -324,42 +324,44 @@ exports.updateComment = (req, res) => {
 };
 
 /*
+
 // update commennt by Alaki
 exports.updateComment = async (req, res) => {
-  const commentId = req.body.id;
-  const comment = req.body.comment;
- 
-  const updatedComment = await Post.updateOne(
-    { comments: { $elemMatch: { _id: commentId } } },
-    { $set: { "comments.$.text": comment } }
-  );
-  if (!updatedComment)
-    res.status(404).json({ message: Language.fa.NoPostFound });
- 
-  res.json(updatedComment);
+const commentId = req.body.id;
+const comment = req.body.comment;
+
+const updatedComment = await Post.updateOne(
+  { comments: { $elemMatch: { _id: commentId } } },
+  { $set: { "comments.$.text": comment } }
+);
+if (!updatedComment)
+  res.status(404).json({ message: Language.fa.NoPostFound });
+
+res.json(updatedComment);
 };
+
 // update commennt with auth
 exports.updateComment = async (req, res) => {
-  const commentId = req.body.id;
-  const comment = req.body.comment;
-  const postId = req.params.id;
- 
-  const post = await Post.findById(postId);
-  const com = post.comments.map(comment => comment.id).indexOf(commentId);
-  const singleComment = post.comments.splice(com, 1);
-  let authorized = singleComment[0].commentedBy;
-  console.log("Security Check Passed ?", req.auth._id == authorized);
- 
-  if (authorized != req.auth._id)
-    res.status(401).json({ mesage: Language.fa.UnAuthorized });
- 
-  const updatedComment = await Post.updateOne(
-    { comments: { $elemMatch: { _id: commentId } } },
-    { $set: { "comments.$.text": comment } }
-  );
-  if (!updatedComment)
-    res.status(404).json({ message: Language.fr.NoPostFound });
- 
-  res.json({ message: Language.fr.CommentUpdated });
+const commentId = req.body.id;
+const comment = req.body.comment;
+const postId = req.params.id;
+
+const post = await Post.findById(postId);
+const com = post.comments.map(comment => comment.id).indexOf(commentId);
+const singleComment = post.comments.splice(com, 1);
+let authorized = singleComment[0].commentedBy;
+console.log("Security Check Passed ?", req.auth._id == authorized);
+
+if (authorized != req.auth._id)
+  res.status(401).json({ mesage: Language.fa.UnAuthorized });
+
+const updatedComment = await Post.updateOne(
+  { comments: { $elemMatch: { _id: commentId } } },
+  { $set: { "comments.$.text": comment } }
+);
+if (!updatedComment)
+  res.status(404).json({ message: Language.fr.NoPostFound });
+
+res.json({ message: Language.fr.CommentUpdated });
 };
- */
+*/

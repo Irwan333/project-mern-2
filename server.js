@@ -23,6 +23,11 @@ mongoose
 const postRoutes = require("./routes/post");
 const authRoutes = require("./routes/auth");
 const userRoutes = require("./routes/user");
+const categoryRoutes = require("./routes/category");
+const productRoutes = require("./routes/product");
+const braintreeRoutes = require("./routes/braintree");
+const orderRoutes = require("./routes/order");
+const invoiceRoutes = require("./routes/invoice");
 
 // apiDocs
 app.get("/api", (req, res) => {
@@ -41,15 +46,22 @@ app.get("/api", (req, res) => {
 app.use(morgan("dev"));
 app.use(bodyParser.json());
 app.use(cookieParser());
-app.use(cors()); // allows all origins
-// if ((process.env.NODE_ENV = "development")) {
-//   app.use(cors({
-//     origin: `http://localhost:3000`
-//   }));
-// }
+// app.use(cors()); // allows all origins
+if ((process.env.NODE_ENV = "development")) {
+  app.use(
+    cors({
+      origin: `http://localhost:3000`,
+    })
+  );
+}
 app.use("/", postRoutes);
 app.use("/", authRoutes);
 app.use("/", userRoutes);
+app.use("/", categoryRoutes);
+app.use("/", productRoutes);
+app.use("/", braintreeRoutes);
+app.use("/", orderRoutes);
+app.use("/", invoiceRoutes);
 app.use(function (err, req, res, next) {
   if (err.name === "UnauthorizedError") {
     res.status(401).json({

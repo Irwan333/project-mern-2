@@ -2,6 +2,8 @@ const _ = require("lodash");
 const User = require("../models/user");
 const formidable = require("formidable");
 const fs = require("fs");
+const { Order } = require("../models/order");
+// const { errorHandler } = require("../helpers/dbErrorHandler");
 
 exports.userById = (req, res, next, id) => {
   User.findById(id)
@@ -20,17 +22,24 @@ exports.userById = (req, res, next, id) => {
 };
 
 exports.hasAuthorization = (req, res, next) => {
-  let sameUser = req.profile && req.auth && req.profile._id == req.auth._id;
-  let adminUser = req.profile && req.auth && req.auth.role === "admin";
+  // let sameUser = req.profile && req.auth && req.profile._id == req.auth._id;
+  // let adminUser = req.profile && req.auth && req.auth.role === 1;
 
-  const authorized = sameUser || adminUser;
+  // const authorized = sameUser || adminUser;
 
-  // console.log("req.profile ", req.profile, " req.auth ", req.auth);
-  // console.log("SAMEUSER", sameUser, "ADMINUSER", adminUser);
+  // // console.log("req.profile ", req.profile, " req.auth ", req.auth);
+  // // console.log("SAMEUSER", sameUser, "ADMINUSER", adminUser);
 
-  if (!authorized) {
+  // if (!authorized) {
+  //   return res.status(403).json({
+  //     error: "Pengguna tidak memiliki otoritas!",
+  //   });
+  // }
+  // next();
+  let user = req.profile && req.auth && req.profile._id == req.auth._id;
+  if (!user) {
     return res.status(403).json({
-      error: "Pengguna tidak memiliki otoritas!",
+      error: "Access denied",
     });
   }
   next();
@@ -192,4 +201,54 @@ exports.findPeople = (req, res) => {
     }
     res.json(users);
   }).select("name");
+};
+
+exports.read = (req, res) => {
+  req.profile.hashed_password = undefined;
+  req.profile.salt = undefined;
+  return res.json(req.profile);
+};
+
+exports.addOrderToUserHistory = (req, res, next) => {
+  let history = [];
+
+  req.body.order.products.forEach((item) => {
+    history.push({
+      _id: item._id,
+      name: item.name,
+      description: item.description,
+      category: item.category,
+      quantity: item.count,
+      transaction_id: req.body.order.transaction_id,
+      amount: req.body.order.amount,
+    });
+  });
+
+  User.findOneAndUpdate(
+    { _id: req.profile._id },
+    { $push: { history: history } },
+    { new: true },
+    (error, data) => {
+      if (error) {
+        return res.status(400).json({
+          error: "Could not update user purchase history",
+        });
+      }
+      next();
+    }
+  );
+};
+
+exports.purchaseHistory = (req, res) => {
+  Order.find({ user: req.profile._id })
+    .populate("user", "_id name")
+    .sort("-created")
+    .exec((err, orders) => {
+      if (err) {
+        return res.status(400).json({
+          error: err,
+        });
+      }
+      res.json(orders);
+    });
 };

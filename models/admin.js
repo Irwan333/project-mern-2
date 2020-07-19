@@ -2,7 +2,7 @@ const mongoose = require("mongoose");
 const bcrypt = require("bcryptjs");
 const { ObjectId } = mongoose.Schema;
 
-const userSchema = new mongoose.Schema(
+const adminSchema = new mongoose.Schema(
   {
     name: {
       type: String,
@@ -22,39 +22,21 @@ const userSchema = new mongoose.Schema(
       required: true,
     },
     salt: String,
-    created: {
-      type: Date,
-      default: Date.now,
-    },
     updated: Date,
     photo: {
       data: Buffer,
       contentType: String,
     },
-    about: {
-      type: String,
-      trim: true,
-    },
-    following: [{ type: ObjectId, ref: "User" }],
-    followers: [{ type: ObjectId, ref: "User" }],
-    resetPasswordLink: {
-      data: String,
-      default: "",
-    },
     role: {
       type: Number,
       default: 0,
-    },
-    history: {
-      type: Array,
-      default: [],
     },
   },
   { timestamps: true }
 );
 
 // virtual
-userSchema
+adminSchema
   .virtual("password")
   .set(function (password) {
     this._password = password;
@@ -66,7 +48,7 @@ userSchema
   });
 
 // methods
-userSchema.methods = {
+adminSchema.methods = {
   authenticate: function (plainText) {
     return bcrypt.compareSync(plainText, this.hashed_password);
   },
@@ -90,15 +72,15 @@ userSchema.methods = {
 };
 
 // // hash password
-// userSchema.methods.hashPassword = function (password) {
+// adminSchema.methods.hashPassword = function (password) {
 //   return bcrypt.hashSync(password, bcrypt.genSaltSync(8), null);
 // }
 
 // // check password
-// userSchema.methods.checkPassword = function (password) {
+// adminSchema.methods.checkPassword = function (password) {
 //   return bcrypt.compareSync(password, this.hashed_password);
 // };
 
-const User = mongoose.model("User", userSchema);
-// module.exports = { User };
-module.exports = User;
+const Admin = mongoose.model("Admin", adminSchema);
+// module.exports = { Admin };
+module.exports = Admin;
