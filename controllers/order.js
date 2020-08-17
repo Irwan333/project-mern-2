@@ -43,7 +43,7 @@ exports.create = (req, res) => {
             <p>Customer name: ${user.name}</p>
             <p>Total products: ${order.products.length}</p>
             <p>Total cost: ${order.amount}</p>
-            <p>Pesanan anda telah diproses.</p>
+            <p>Terimakasih telah melakukan pemesanan.</p>
         `,
     };
     sendEmail(emailData);
@@ -100,4 +100,18 @@ exports.updateOrderStatus = (req, res) => {
       res.json(order);
     }
   );
+};
+
+exports.invoice = (req, res) => {
+  Order.find(req.order._id)
+    .populate("user", "_id name address")
+    .sort("-created")
+    .exec((err, orders) => {
+      if (err) {
+        return res.status(400).json({
+          error: errorHandler(error),
+        });
+      }
+      res.json(orders);
+    });
 };

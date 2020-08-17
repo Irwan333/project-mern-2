@@ -6,9 +6,9 @@ const {
   accountActivation,
   forgotPassword,
   resetPassword,
-  // googleLogin,
-  // facebookLogin,
-  socialLogin,
+  googleLogin,
+  facebookLogin,
+  // socialLogin,
   signinAdmin,
 } = require("../controllers/auth");
 
@@ -38,12 +38,10 @@ router.put(
 );
 
 // then use this route for social login
-router.post("/social-login", socialLogin);
+router.post("/google-login", googleLogin);
+router.post("/facebook-login", facebookLogin);
+// router.post("/social-login", socialLogin);
 
 router.param("userId", userById);
-
-// google and facebook
-// router.post("/google-login", googleLogin);
-// router.post("/facebook-login", facebookLogin);
 
 module.exports = router;

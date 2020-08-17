@@ -5,6 +5,9 @@ const Admin = require("../models/admin");
 const _ = require("lodash");
 const { OAuth2Client } = require("google-auth-library");
 const { sendEmail } = require("../helpers");
+const fetch = require("node-fetch");
+// const activation = require("../style/jade/activation.html");
+// const css = require("../style/activation.css");
 
 // exports.signup = async (req, res) => {
 //   const userExists = await User.findOne({ email: req.body.email });
@@ -35,14 +38,340 @@ exports.signup = (req, res) => {
     const emailData = {
       from: process.env.EMAIL_FROM,
       to: email,
-      subject: `Account activation link`,
+      subject: `Link aktivasi akun`,
       html: `
-                <h1>Please use the following link to activate your account</h1>
-                <p>${process.env.CLIENT_URL}/auth/activate/${token}</p>
-                <hr />
-                <p>This email may contain sensetive information</p>
-                <p>${process.env.CLIENT_URL}</p>
-            `,
+ <head>
+ <link
+  href="https://fonts.googleapis.com/css?family=Lato:300,400,700"
+  rel="stylesheet"
+/>
+<style>
+  html,
+  body {
+    margin: 0 auto !important;
+    padding: 0 !important;
+    height: 100% !important;
+    width: 100% !important;
+    background: #f1f1f1;
+  }
+  * {
+    -ms-text-size-adjust: 100%;
+    -webkit-text-size-adjust: 100%;
+  }
+  div[style*="margin: 16px 0"] {
+    margin: 0 !important;
+  }
+  table {
+    border-spacing: 0 !important;
+    border-collapse: collapse !important;
+    table-layout: fixed !important;
+    margin: 0 auto !important;
+  }
+  img {
+    -ms-interpolation-mode: bicubic;
+  }
+  a {
+    text-decoration: none;
+  }
+  *[x-apple-data-detectors],  /* iOS */
+.unstyle-auto-detected-links *,
+.aBn {
+    border-bottom: 0 !important;
+    cursor: default !important;
+    color: inherit !important;
+    text-decoration: none !important;
+    font-size: inherit !important;
+    font-family: inherit !important;
+    font-weight: inherit !important;
+    line-height: inherit !important;
+  }
+  .a6S {
+    display: none !important;
+    opacity: 0.01 !important;
+  }
+  .im {
+    color: inherit !important;
+  }
+  img.g-img + div {
+    display: none !important;
+  }
+  @media only screen and (min-device-width: 320px) and (max-device-width: 374px) {
+    u ~ div .email-container {
+      min-width: 320px !important;
+    }
+  }
+  @media only screen and (min-device-width: 375px) and (max-device-width: 413px) {
+    u ~ div .email-container {
+      min-width: 375px !important;
+    }
+  }
+  @media only screen and (min-device-width: 414px) {
+    u ~ div .email-container {
+      min-width: 414px !important;
+    }
+  }
+</style>
+<style>
+  .primary {
+    background: #30e3ca;
+  }
+  .bg_white {
+    background: #ffffff;
+  }
+  .bg_light {
+    background: #fafafa;
+  }
+  .bg_black {
+    background: #000000;
+  }
+  .bg_dark {
+    background: rgba(0, 0, 0, 0.8);
+  }
+  .email-section {
+    padding: 2.5em;
+  }
+  .btn {
+    padding: 10px 15px;
+    display: inline-block;
+  }
+  .btn.btn-primary {
+    border-radius: 5px;
+    background: #30e3ca;
+    color: #ffffff;
+  }
+  .btn.btn-white {
+    border-radius: 5px;
+    background: #ffffff;
+    color: #000000;
+  }
+  .btn.btn-white-outline {
+    border-radius: 5px;
+    background: transparent;
+    border: 1px solid #fff;
+    color: #fff;
+  }
+  .btn.btn-black-outline {
+    border-radius: 0px;
+    background: transparent;
+    border: 2px solid #000;
+    color: #000;
+    font-weight: 700;
+  }
+
+  h1,
+  h2,
+  h3,
+  h4,
+  h5,
+  h6 {
+    font-family: "Lato", sans-serif;
+    color: #000000;
+    margin-top: 0;
+    font-weight: 400;
+  }
+
+  body {
+    font-family: "Lato", sans-serif;
+    font-weight: 400;
+    font-size: 15px;
+    line-height: 1.8;
+    color: rgba(0, 0, 0, 0.4);
+  }
+
+  a {
+    color: #30e3ca;
+  }
+  .logo h1 {
+    margin: 0;
+  }
+  .logo h1 a {
+    color: #30e3ca;
+    font-size: 24px;
+    font-weight: 700;
+    font-family: "Lato", sans-serif;
+  }
+  .hero {
+    position: relative;
+    z-index: 0;
+  }
+
+  .hero .text {
+    color: rgba(0, 0, 0, 0.3);
+  }
+  .hero .text h2 {
+    color: #000;
+    font-size: 40px;
+    margin-bottom: 0;
+    font-weight: 400;
+    line-height: 1.4;
+  }
+  .hero .text h3 {
+    font-size: 24px;
+    font-weight: 300;
+  }
+  .hero .text h2 span {
+    font-weight: 600;
+    color: #30e3ca;
+  }
+  .heading-section h2 {
+    color: #000000;
+    font-size: 28px;
+    margin-top: 0;
+    line-height: 1.4;
+    font-weight: 400;
+  }
+  .heading-section .subheading {
+    margin-bottom: 20px !important;
+    display: inline-block;
+    font-size: 13px;
+    text-transform: uppercase;
+    letter-spacing: 2px;
+    color: rgba(0, 0, 0, 0.4);
+    position: relative;
+  }
+  .heading-section .subheading::after {
+    position: absolute;
+    left: 0;
+    right: 0;
+    bottom: -10px;
+    content: "";
+    width: 100%;
+    height: 2px;
+    background: #30e3ca;
+    margin: 0 auto;
+  }
+
+  .heading-section-white {
+    color: rgba(255, 255, 255, 0.8);
+  }
+  .heading-section-white h2 {
+    line-height: 1;
+    padding-bottom: 0;
+  }
+  .heading-section-white h2 {
+    color: #ffffff;
+  }
+  .heading-section-white .subheading {
+    margin-bottom: 0;
+    display: inline-block;
+    font-size: 13px;
+    text-transform: uppercase;
+    letter-spacing: 2px;
+    color: rgba(255, 255, 255, 0.4);
+  }
+
+  ul.social {
+    padding: 0;
+  }
+  ul.social li {
+    display: inline-block;
+    margin-right: 10px;
+  }
+  .footer {
+    border-top: 1px solid rgba(0, 0, 0, 0.05);
+    color: rgba(0, 0, 0, 0.5);
+  }
+  .footer .heading {
+    color: #000;
+    font-size: 20px;
+  }
+  .footer ul {
+    margin: 0;
+    padding: 0;
+  }
+  .footer ul li {
+    list-style: none;
+    margin-bottom: 10px;
+  }
+  .footer ul li a {
+    color: rgba(0, 0, 0, 1);
+  }
+</style>
+ </head> 
+<body
+  width="100%"
+  style="margin: 0; padding: 0 !important; background-color: #f1f1f1;"
+>
+  <center style="width: 100%; background-color: #f1f1f1;">
+    <div style="max-width: 600px; margin: 0 auto;" class="email-container">
+      <table
+        align="center"
+        role="presentation"
+        cellspacing="0"
+        cellpadding="0"
+        border="0"
+        width="100%"
+        style="margin: auto;"
+      >
+        <tr>
+          <td valign="top" class="bg_white" style="padding: 1em 2.5em 0 2.5em;">
+            <table
+              role="presentation"
+              border="0"
+              cellpadding="0"
+              cellspacing="0"
+              width="100%"
+            >
+              <tr>
+                <td class="logo" style="text-align: center;">
+                  <h1><a href="${process.env.CLIENT_URL}">Aqua Mania</a></h1>
+                </td>
+              </tr>
+            </table>
+          </td>
+        </tr>
+        <tr>
+          <td
+            valign="middle"
+            class="hero bg_white"
+            style="padding: 3em 0 2em 0;"
+          >
+            <img
+              src="../style/img/email.png"
+              alt=""
+              style="
+                width: 300px;
+                max-width: 600px;
+                height: auto;
+                margin: auto;
+                display: block;
+              "
+            />
+          </td>
+        </tr>
+        <tr>
+          <td
+            valign="middle"
+            class="hero bg_white"
+            style="padding: 2em 0 4em 0;"
+          >
+            <table>
+              <tr>
+                <td>
+                  <div
+                    class="text"
+                    style="padding: 0 2.5em; text-align: center;"
+                  >
+                    <h2>Aktivasi Email</h2>
+                    <h3>Jika ini bukan Anda, abaikan!</h3>
+                    <p>
+                      <a
+                        href="${process.env.CLIENT_URL}/auth/activate/${token}"
+                        class="btn btn-primary"
+                        >Aktivasi</a
+                      >
+                    </p>
+                  </div>
+                </td>
+              </tr>
+            </table>
+          </td>
+        </tr>
+      </table>
+    </div>
+  </center>
+</body>
+    `,
     };
 
     sendEmail(emailData)
@@ -84,6 +413,7 @@ exports.accountActivation = (req, res) => {
             error: "Error saving user in database. Try signup again",
           });
         }
+        console.log(user);
         return res.json({
           message: "Signup success. Please signin.",
         });
@@ -99,7 +429,8 @@ exports.accountActivation = (req, res) => {
 exports.signin = (req, res) => {
   // find the user based on email
   const { email, password } = req.body;
-  User.findOne({ email }, (err, user) => {
+  // User.findOne({ email }, (err, user) => {
+  User.findOne({ email }).exec((err, user) => {
     // if err or no user
     if (err || !user) {
       return res.status(401).json({
@@ -118,11 +449,20 @@ exports.signin = (req, res) => {
       { _id: user._id, role: user.role },
       process.env.JWT_SECRET
     );
+    // const token = jwt.sign({ _id: user._id }, process.env.JWT_SECRET, {
+    //   expiresIn: "7d",
+    // });
     // persist the token as 't' in cookie with expiry date
     res.cookie("t", token, { expire: new Date() + 9999 });
     // retrun response with user and token to frontend client
     const { _id, name, email, role } = user;
-    return res.json({ token, user: { _id, email, name, role } });
+    return res.json({
+      token,
+      _id: _id,
+      email: email,
+      name: name,
+      role: role,
+    });
   });
 };
 
@@ -161,7 +501,13 @@ exports.signinAdmin = (req, res) => {
     res.cookie("t", token, { expire: new Date() + 9999 });
     // retrun response with user and token to frontend client
     const { _id, name, email, role } = admin;
-    return res.json({ token, admin: { _id, email, name, role } });
+    return res.json({
+      token,
+      _id: _id,
+      email: email,
+      name: name,
+      role: role,
+    });
   });
 };
 
@@ -222,8 +568,8 @@ exports.forgotPassword = (req, res) => {
       from: process.env.EMAIL_FROM,
       to: email,
       subject: "Password Reset Instructions",
-      text: `Please use the following link to reset your password: ${process.env.CLIENT_URL}/reset-password/${token}`,
-      html: `<p>Please use the following link to reset your password:</p> <p>${process.env.CLIENT_URL}/reset-password/${token}</p>`,
+      text: `Please use the following link to reset your password: ${process.env.CLIENT_URL}/auth/password/reset/${token}`,
+      html: `<p>Please use the following link to reset your password:</p> <p>${process.env.CLIENT_URL}/auth/password/reset/${token}</p>`,
     };
 
     return user.updateOne({ resetPasswordLink: token }, (err, success) => {
@@ -248,57 +594,63 @@ exports.forgotPassword = (req, res) => {
 exports.resetPassword = (req, res) => {
   const { resetPasswordLink, newPassword } = req.body;
 
-  User.findOne({ resetPasswordLink }, (err, user) => {
-    // if err or no user
-    if (err || !user)
-      return res.status("401").json({
-        error: "Invalid Link!",
-      });
-
-    const updatedFields = {
-      password: newPassword,
-      resetPasswordLink: "",
-    };
-
-    user = _.extend(user, updatedFields);
-    user.updated = Date.now();
-
-    user.save((err, result) => {
+  if (resetPasswordLink) {
+    jwt.verify(resetPasswordLink, process.env.JWT_SECRET, function (
+      err,
+      decoded
+    ) {
       if (err) {
         return res.status(400).json({
-          error: err,
+          error: "Expired link. Try again",
         });
       }
-      res.json({
-        message: `Great! Now you can login with your new password.`,
+
+      User.findOne({ resetPasswordLink }, (err, user) => {
+        if (err || !user) {
+          return res.status(400).json({
+            error: "Something went wrong. Try later",
+          });
+        }
+
+        const updatedFields = {
+          password: newPassword,
+          resetPasswordLink: "",
+        };
+
+        user = _.extend(user, updatedFields);
+
+        user.save((err, result) => {
+          if (err) {
+            return res.status(400).json({
+              error: "Error resetting user password",
+            });
+          }
+          res.json({
+            message: `Great! Now you can login with your new password`,
+          });
+        });
       });
     });
-  });
+  }
 };
 
 const client = new OAuth2Client(process.env.REACT_APP_GOOGLE_CLIENT_ID);
 
-exports.socialLogin = async (req, res) => {
+exports.googleLogin = async (req, res) => {
   const idToken = req.body.tokenId;
   const ticket = await client.verifyIdToken({
     idToken,
     audience: process.env.REACT_APP_GOOGLE_CLIENT_ID,
   });
   // console.log('ticket', ticket);
-  const {
-    email_verified,
-    email,
-    name,
-    picture,
-    sub: googleid,
-  } = ticket.getPayload();
+  const { email_verified, email, name, sub: googleid } = ticket.getPayload();
 
   if (email_verified) {
     console.log(`email_verified > ${email_verified}`);
 
     const newUser = { email, name, password: googleid };
     // try signup by finding user with req.email
-    let user = User.findOne({ email }, (err, user) => {
+    User.findOne({ email }, (err, user) => {
       if (err || !user) {
         // create a new user and login
         user = new User(newUser);
@@ -312,7 +664,7 @@ exports.socialLogin = async (req, res) => {
         res.cookie("t", token, { expire: new Date() + 9999 });
         // return response with user and token to frontend client
         const { _id, name, email } = user;
-        return res.json({ token, user: { _id, name, email } });
+        return res.json(token);
       } else {
         // update existing user with new social info and login
         req.profile = user;
@@ -326,41 +678,77 @@ exports.socialLogin = async (req, res) => {
         );
         res.cookie("t", token, { expire: new Date() + 9999 });
         // return response with user and token to frontend client
-        const { _id, name, email } = user;
-        return res.json({ token, user: { _id, name, email } });
+        const { _id, name, email, role } = user;
+        return res.json({
+          token,
+          _id: _id,
+          email: email,
+          name: name,
+          role: role,
+        });
       }
     });
   }
 };
 
-// exports.socialLogin = (req, res) => {
-//     console.log('social login req.body', req.body);
+exports.facebookLogin = (req, res) => {
+  // console.log("FACEBOOK LOGIN REQ BODY", req.body);
+  const { userID, accessToken } = req.body;
 
-// // try signup by finding user with req.email
-// let user = User.findOne({ email: req.body.email }, (err, user) => {
-//     if (err || !user) {
-//         // create a new user and login
-//         user = new User(req.body);
-//         req.profile = user;
-//         user.save();
-//         // generate a token with user id and secret
-//         const token = jwt.sign({ _id: user._id, iss: process.env.APP_NAME }, process.env.JWT_SECRET);
-//         res.cookie('t', token, { expire: new Date() + 9999 });
-//         // return response with user and token to frontend client
-//         const { _id, name, email } = user;
-//         return res.json({ token, user: { _id, name, email } });
-//     } else {
-//         // update existing user with new social info and login
-//         req.profile = user;
-//         user = _.extend(user, req.body);
-//         user.updated = Date.now();
-//         user.save();
-//         // generate a token with user id and secret
-//         const token = jwt.sign({ _id: user._id, iss: process.env.APP_NAME }, process.env.JWT_SECRET);
-//         res.cookie('t', token, { expire: new Date() + 9999 });
-//         // return response with user and token to frontend client
-//         const { _id, name, email } = user;
-//         return res.json({ token, user: { _id, name, email } });
-//     }
-// });
-// };
+  const url = `https://graph.facebook.com/v8.0/${userID}/?fields=id,name,email&access_token=${accessToken}`;
+  // console.log(url);
+  fetch(url, {
+    method: "GET",
+  })
+    .then((response) => {
+      // console.log("signin response: ", response);
+      return response.json();
+    })
+    .then((response) => {
+      const { email, name } = response;
+      User.findOne({ email }).exec((err, user) => {
+        if (user) {
+          const token = jwt.sign(
+            { _id: user._id, iss: process.env.APP_NAME },
+            process.env.JWT_SECRET
+          );
+          res.cookie("t", token, { expire: new Date() + 9999 });
+          const { _id, email, name, role } = user;
+          return res.json({
+            token,
+            _id: _id,
+            email: email,
+            name: name,
+            role: role,
+          });
+        } else {
+          let password = email + process.env.JWT_SECRET;
+          user = new User({ name, email, password });
+          user.save((err, data) => {
+            if (err) {
+              console.log("ERROR FACEBOOK LOGIN ON USER SAVE", err);
+              return res.status(400).json({
+                error: "User signup failed with facebook",
+              });
+            }
+            const token = jwt.sign(
+              { _id: user._id, iss: process.env.APP_NAME },
+              process.env.JWT_SECRET
+            );
+            res.cookie("t", token, { expire: new Date() + 9999 });
+            const { _id, email, name, role } = data;
+            return res.json({
+              token,
+              _id: _id,
+              email: email,
+              name: name,
+              role: role,
+            });
+          });
+        }
+      });
+    })
+    .catch((err) => {
+      console.log(err);
+    });
+};

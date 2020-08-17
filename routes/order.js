@@ -11,6 +11,7 @@ const {
   getStatusValuesUser,
   orderById,
   updateOrderStatus,
+  invoice,
 } = require("../controllers/order");
 const { decreaseQuantity } = require("../controllers/product");
 
@@ -22,6 +23,7 @@ router.post(
 );
 
 router.get("/order/list/:userId", requireSignin, listOrders);
+router.get("/invoice/:orderId", requireSignin, invoice);
 router.get("/order/status-values/:userId", requireSignin, getStatusValues);
 // router.get("/invoice/list/:userId", requireSignin, listOrdersUser);
 // router.get(

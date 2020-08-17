@@ -14,9 +14,23 @@ exports.userSignupValidator = [
     })
     .withMessage("password minimal 8 karakter")
     .matches(/\d/)
-    .withMessage("Password harus mengandung angka"),
+    .withMessage("Password harus mengandung angka")
+    .custom((value, { req }) => {
+      if (value !== req.body.confirmPassword) {
+        // trow error if passwords do not match
+        throw new Error("Password tidak sama!");
+      } else {
+        return value;
+      }
+    }),
   // .matches(/[^A-Za-z0-9]/)
   // .withMessage("Password harus mengandung karakter spesial")
+
+  check("confirmPassword")
+    .isLength({
+      min: 8,
+    })
+    .withMessage("password minimal 8 karakter"),
 ];
 
 exports.userSigninValidator = [
